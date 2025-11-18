@@ -4,102 +4,281 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>百度地图转高德地图导航</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
-        body { 
-            margin: 0; 
-            padding: 20px; 
-            background: #f5f5f5; 
-            font-family: system-ui, sans-serif; 
+        :root {
+            --primary-color: #f76160;
+            --primary-dark: #e6504f;
+            --secondary-color: #4285f4;
+            --light-bg: #f5f5f5;
+            --white: #ffffff;
+            --gray-light: #f9f9f9;
+            --gray: #ddd;
+            --text-dark: #333;
+            --text-gray: #666;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-hover: 0 6px 16px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --transition: all 0.3s ease;
         }
-        .container { 
-            max-width: 800px; 
-            margin: 30px auto; 
-            padding: 25px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .input-group {
-            margin-bottom: 25px;
+
+        body {
+            background: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        label {
-            display: block;
-            margin-bottom: 10px;
+
+        .app-container {
+            max-width: 800px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 30px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .app-container:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .app-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .app-title {
+            font-size: 24px;
             font-weight: 600;
-            color: #333;
-            font-size: 16px;
+            color: var(--text-dark);
+            margin: 0;
         }
+
+        .input-section, .result-section {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .section-icon {
+            color: var(--secondary-color);
+            font-size: 18px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
         textarea {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
+            padding: 15px;
+            border: 1px solid var(--gray);
             border-radius: 8px;
-            min-height: 120px;
+            min-height: 140px;
             font-family: monospace;
             resize: vertical;
-            box-sizing: border-box;
             font-size: 14px;
+            transition: var(--transition);
         }
-        .btn { 
-            display: inline-block; 
-            padding: 12px 24px; 
-            background: #f76160; 
-            color: white; 
-            text-decoration: none; 
-            border-radius: 8px; 
-            font-size: 16px; 
-            font-weight: 500; 
-            margin-right: 10px;
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
             border: none;
             cursor: pointer;
-            font-family: system-ui, sans-serif;
-            transition: background 0.3s;
+            transition: var(--transition);
         }
+
         .btn:hover {
-            background: #e6504f;
+            background: var(--primary-dark);
+            transform: translateY(-2px);
         }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-icon {
+            font-size: 16px;
+        }
+
         .result-area {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f9f9f9;
+            background: var(--gray-light);
             border-radius: 8px;
+            padding: 20px;
+            transition: var(--transition);
         }
-        .tip { 
-            color: #666; 
-            font-size: 14px; 
-            line-height: 1.6; 
-            margin-top: 10px;
-            padding: 10px;
+
+        .result-area:hover {
+            background: #f0f0f0;
+        }
+
+        #mapLink {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            padding: 14px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        #mapLink:hover {
+            background: #3367d6;
+            transform: translateY(-2px);
+        }
+
+        .tip {
+            color: var(--text-gray);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 25px;
+            padding: 15px;
             background: #f0f7ff;
-            border-left: 3px solid #4285f4;
+            border-left: 4px solid var(--secondary-color);
+            border-radius: 0 6px 6px 0;
         }
+
         .error {
             color: #dc3545;
-            padding: 10px;
+            padding: 15px;
             background: #f8d7da;
-            border-radius: 6px;
-            margin-top: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .app-container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .btn-group {
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>百度地图转高德地图导航链接</h2>
-        
-        <div class="input-group">
-            <label for="baiduUrl">请输入百度地图导航链接：</label>
-            <textarea id="baiduUrl" placeholder="例如：baidumap://map/direction?origin=...&destination=...&viaPoints=...">baidumap://map/direction?car_type=DEFAULT&origin=40.087908,116.317518&destination=40.046014,116.283174&coord_type=gcj02&mode=driving&src=wuanrenwen&viaPoints=%7B%22viaPoints%22%3A%5B%7B%22lat%22%3A%2240.088553%22%2C%22lng%22%3A%22116.316402%22%7D%2C%7B%22lat%22%3A%2240.089041%22%2C%22lng%22%3A%22116.314508%22%7D%2C%7B%22lat%22%3A%2240.088778%22%2C%22lng%22%3A%22116.303436%22%7D%2C%7B%22lat%22%3A%2240.092807%22%2C%22lng%22%3A%22116.300395%22%7D%2C%7B%22lat%22%3A%2240.081713%22%2C%22lng%22%3A%22116.26618%22%7D%2C%7B%22lat%22%3A%2240.043304%22%2C%22lng%22%3A%22116.284505%22%7D%2C%7B%22lat%22%3A%2240.044323%22%2C%22lng%22%3A%22116.284693%22%7D%5D%7D</textarea>
+    <div class="app-container">
+        <div class="app-header">
+            <div class="app-logo">
+                <i class="fa fa-map-o" aria-hidden="true"></i>
+            </div>
+            <h1 class="app-title">百度地图转高德地图导航</h1>
         </div>
 
-        <button class="btn" onclick="convertUrl()">转换为高德地图链接</button>
-        <button class="btn" onclick="clearAll()">清空内容</button>
-
-        <div class="result-area">
-            <label>转换结果（高德地图链接）：</label>
-            <textarea id="amapUrl" readonly placeholder="转换后的高德地图链接将显示在这里"></textarea>
+        <div class="input-section">
+            <div class="section-header">
+                <i class="fa fa-link section-icon" aria-hidden="true"></i>
+                <h2 class="section-title">百度地图链接</h2>
+            </div>
+            <textarea id="baiduUrl" placeholder="请输入百度地图导航链接（baidumap:// 开头）"></textarea>
         </div>
 
-        <a id="mapLink" href="" class="btn" style="display: block; text-align: center; margin-top: 15px;">
+        <div class="btn-group">
+            <button class="btn" onclick="convertUrl()">
+                <i class="fa fa-exchange btn-icon" aria-hidden="true"></i>
+                转换为高德地图链接
+            </button>
+            <button class="btn btn-secondary" onclick="clearAll()">
+                <i class="fa fa-trash btn-icon" aria-hidden="true"></i>
+                清空内容
+            </button>
+        </div>
+
+        <div class="result-section">
+            <div class="section-header">
+                <i class="fa fa-compass section-icon" aria-hidden="true"></i>
+                <h2 class="section-title">转换结果（高德地图链接）</h2>
+            </div>
+            <div class="result-area">
+                <textarea id="amapUrl" readonly placeholder="转换后的高德地图链接将显示在这里"></textarea>
+            </div>
+        </div>
+
+        <a id="mapLink" href="" style="display: none;">
+            <i class="fa fa-map-marker" aria-hidden="true"></i>
             打开高德地图导航
         </a>
 
@@ -110,6 +289,10 @@
             3. 转换后的链接会显示在结果框中，点击"打开高德地图导航"即可使用<br>
             4. 支持解析起点、终点和途经点信息并自动转换格式
         </div>
+
+        <div class="footer">
+            <p>地图链接转换工具 &copy; 2023</p>
+        </div>
     </div>
 
     <script>
@@ -119,14 +302,19 @@
             const amapUrlInput = document.getElementById('amapUrl');
             const mapLink = document.getElementById('mapLink');
             const errorDiv = document.querySelector('.error');
-            
+
             // 清除之前的错误信息
             if (errorDiv) errorDiv.remove();
-            
+
             try {
+                // 验证输入不为空
+                if (!baiduUrl) {
+                    throw new Error('请输入百度地图链接');
+                }
+
                 // 1. 解析百度地图参数
                 const result = extractBaiduMapCoordinates(baiduUrl);
-                
+
                 // 2. 构建高德地图链接
                 let transferUrl = "amapuri://route/plan/?sourceApplication=wuanrenwen" +
                     "&slat=" + encodeURIComponent(result.origin.lat) +
@@ -134,7 +322,7 @@
                     "&dlat=" + encodeURIComponent(result.destination.lat) +
                     "&dlon=" + encodeURIComponent(result.destination.lng) +
                     "&dev=0&t=0";
-                
+
                 // 添加途经点信息
                 if (result.viaPointsCount > 0) {
                     transferUrl += "&vian=" + result.viaPointsCount +
@@ -142,31 +330,33 @@
                         "&vialons=" + encodeURIComponent(result.viaLngs.join('|')) +
                         "&vianames=" + encodeURIComponent(result.viaNames.join('|'));
                 }
-                
+
                 // 显示结果并更新链接
                 amapUrlInput.value = transferUrl;
                 mapLink.href = transferUrl;
-                
+                mapLink.style.display = 'block';
+
             } catch (e) {
                 // 显示错误信息
                 const errorElement = document.createElement('div');
                 errorElement.className = 'error';
-                errorElement.textContent = '转换失败: ' + e.message;
-                document.querySelector('.result-area').after(errorElement);
+                errorElement.innerHTML = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i>' + e.message;
+                document.querySelector('.result-section').after(errorElement);
+                mapLink.style.display = 'none';
             }
         }
 
-        // 解析百度地图链接的坐标信息（JavaScript实现Python逻辑）
+        // 解析百度地图链接的坐标信息
         function extractBaiduMapCoordinates(url) {
             // 1. 解析URL参数
             const urlParts = url.split('?');
             if (urlParts.length < 2) {
                 throw new Error('无效的百度地图链接格式');
             }
-            
+
             const queryString = urlParts[1];
             const queryParams = {};
-            
+
             // 解析查询参数
             queryString.split('&').forEach(param => {
                 const [key, value] = param.split('=');
@@ -227,6 +417,7 @@
             document.getElementById('baiduUrl').value = '';
             document.getElementById('amapUrl').value = '';
             document.getElementById('mapLink').href = '';
+            document.getElementById('mapLink').style.display = 'none';
             const errorDiv = document.querySelector('.error');
             if (errorDiv) errorDiv.remove();
         }
