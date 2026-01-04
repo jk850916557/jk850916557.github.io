@@ -83,6 +83,42 @@
             margin: 0;
         }
 
+        /* 新增常用路线按钮组样式 */
+        .common-route-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .common-route-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #28a745;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .common-route-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .common-route-btn.home {
+            background: #17a2b8;
+        }
+
+        .common-route-btn.home:hover {
+            background: #138496;
+        }
+
         .input-section, .result-section {
             margin-bottom: 30px;
             position: relative;
@@ -228,12 +264,12 @@
                 margin: 15px auto;
             }
 
-            .btn {
+            .btn, .common-route-btn {
                 width: 100%;
                 justify-content: center;
             }
 
-            .btn-group {
+            .btn-group, .common-route-group {
                 gap: 10px;
             }
         }
@@ -246,6 +282,18 @@
                 <i class="fa fa-map-o" aria-hidden="true"></i>
             </div>
             <h1 class="app-title">百度地图转高德地图导航</h1>
+        </div>
+
+        <!-- 新增常用路线按钮组 -->
+        <div class="common-route-group">
+            <button class="common-route-btn" onclick="openWorkRoute()">
+                <i class="fa fa-briefcase btn-icon" aria-hidden="true"></i>
+                去上班
+            </button>
+            <button class="common-route-btn home" onclick="openHomeRoute()">
+                <i class="fa fa-home btn-icon" aria-hidden="true"></i>
+                回家
+            </button>
         </div>
 
         <div class="input-section">
@@ -287,7 +335,8 @@
             1. 在上方输入框粘贴百度地图导航链接（baidumap:// 开头）<br>
             2. 点击"转换为高德地图链接"按钮进行转换<br>
             3. 转换后的链接会显示在结果框中，点击"打开高德地图导航"即可使用<br>
-            4. 支持解析起点、终点和途经点信息并自动转换格式
+            4. 支持解析起点、终点和途经点信息并自动转换格式<br>
+            5. 可直接点击"去上班"或"回家"按钮快速打开预设路线
         </div>
 
         <div class="footer">
@@ -296,6 +345,36 @@
     </div>
 
     <script>
+        // 预设上班路线URL
+        const WORK_ROUTE_URL = "amapuri://route/plan/?sourceApplication=wuanrenwen&slat=40.088833&slon=116.316925&dlat=40.051186&dlon=116.28805&dev=0&t=0&vian=10&vialats=40.088553%7C40.089899%7C40.085291%7C40.088778%7C40.092807%7C40.088075%7C40.061248%7C40.059563%7C40.054456%7C40.051302&vialons=116.316402%7C116.315908%7C116.306354%7C116.303436%7C116.300395%7C116.274554%7C116.300303%7C116.294816%7C116.29252%7C116.292396&vianames=%E9%80%94%E7%BB%8F%E7%82%B91%7C%E9%80%94%E7%BB%8F%E7%82%B92%7C%E9%80%94%E7%BB%8F%E7%82%B93%7C%E9%80%94%E7%BB%8F%E7%82%B94%7C%E9%80%94%E7%BB%8F%E7%82%B95%7C%E9%80%94%E7%BB%8F%E7%82%B96%7C%E9%80%94%E7%BB%8F%E7%82%B97%7C%E9%80%94%E7%BB%8F%E7%82%B98%7C%E9%80%94%E7%BB%8F%E7%82%B99%7C%E9%80%94%E7%BB%8F%E7%82%B910";
+
+        // 预设回家路线URL
+        const HOME_ROUTE_URL = "amapuri://route/plan/?sourceApplication=wuanrenwen&slat=40.051186&slon=116.28805&dlat=40.0881&dlon=116.31728&dev=0&t=0&vian=11&vialats=40.050675%7C40.0523%7C40.053153%7C40.060953%7C40.065663%7C40.067025%7C40.063769%7C40.063619%7C40.066897%7C40.086026%7C40.088553&vialons=116.289805%7C116.293163%7C116.293265%7C116.316606%7C116.315812%7C116.319486%7C116.321541%7C116.3213%7C116.320575%7C116.308103%7C116.316402&vianames=%E9%80%94%E7%BB%8F%E7%82%B91%7C%E9%80%94%E7%BB%8F%E7%82%B92%7C%E9%80%94%E7%BB%8F%E7%82%B93%7C%E9%80%94%E7%BB%8F%E7%82%B94%7C%E9%80%94%E7%BB%8F%E7%82%B95%7C%E9%80%94%E7%BB%8F%E7%82%B96%7C%E9%80%94%E7%BB%8F%E7%82%B97%7C%E9%80%94%E7%BB%8F%E7%82%B98%7C%E9%80%94%E7%BB%8F%E7%82%B99%7C%E9%80%94%E7%BB%8F%E7%82%B910%7C%E9%80%94%E7%BB%8F%E7%82%B911";
+
+        // 打开上班路线
+        function openWorkRoute() {
+            // 在结果框显示上班路线URL
+            document.getElementById('amapUrl').value = WORK_ROUTE_URL;
+            // 更新导航链接并显示
+            const mapLink = document.getElementById('mapLink');
+            mapLink.href = WORK_ROUTE_URL;
+            mapLink.style.display = 'block';
+            // 跳转到高德地图
+            window.location.href = WORK_ROUTE_URL;
+        }
+
+        // 打开回家路线
+        function openHomeRoute() {
+            // 在结果框显示回家路线URL
+            document.getElementById('amapUrl').value = HOME_ROUTE_URL;
+            // 更新导航链接并显示
+            const mapLink = document.getElementById('mapLink');
+            mapLink.href = HOME_ROUTE_URL;
+            mapLink.style.display = 'block';
+            // 跳转到高德地图
+            window.location.href = HOME_ROUTE_URL;
+        }
+
         // 解析百度地图链接并转换为高德地图链接
         function convertUrl() {
             const baiduUrl = document.getElementById('baiduUrl').value.trim();
