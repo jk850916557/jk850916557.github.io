@@ -286,13 +286,24 @@
 
         <!-- 新增常用路线按钮组 -->
         <div class="common-route-group">
-            <button class="common-route-btn" onclick="openWorkRoute()">
+            <button class="common-route-btn" onclick="openOneWorkRoute()">
                 <i class="fa fa-briefcase btn-icon" aria-hidden="true"></i>
-                去上班
+                家 ➡️ 广联达一期
             </button>
-            <button class="common-route-btn home" onclick="openHomeRoute()">
+            <button class="common-route-btn home" onclick="openOneHomeRoute()">
                 <i class="fa fa-home btn-icon" aria-hidden="true"></i>
-                回家
+                广联达一期 ➡️ 家
+            </button>
+        </div>
+
+        <div class="common-route-group">
+            <button class="common-route-btn" onclick="openDongWorkRoute()">
+                <i class="fa fa-briefcase btn-icon" aria-hidden="true"></i>
+                家 ➡️ 东大停车场
+            </button>
+            <button class="common-route-btn home" onclick="openDongHomeRoute()">
+                <i class="fa fa-home btn-icon" aria-hidden="true"></i>
+                东大停车场 ➡️ 家
             </button>
         </div>
 
@@ -345,34 +356,64 @@
     </div>
 
     <script>
-        // 预设上班路线URL
-        const WORK_ROUTE_URL = "amapuri://route/plan/?sourceApplication=wuanrenwen&slat=40.088833&slon=116.316925&dlat=40.051186&dlon=116.28805&dev=0&t=0&vian=10&vialats=40.088553%7C40.089899%7C40.085291%7C40.088778%7C40.092807%7C40.088075%7C40.061248%7C40.059563%7C40.054456%7C40.051302&vialons=116.316402%7C116.315908%7C116.306354%7C116.303436%7C116.300395%7C116.274554%7C116.300303%7C116.294816%7C116.29252%7C116.292396&vianames=%E9%80%94%E7%BB%8F%E7%82%B91%7C%E9%80%94%E7%BB%8F%E7%82%B92%7C%E9%80%94%E7%BB%8F%E7%82%B93%7C%E9%80%94%E7%BB%8F%E7%82%B94%7C%E9%80%94%E7%BB%8F%E7%82%B95%7C%E9%80%94%E7%BB%8F%E7%82%B96%7C%E9%80%94%E7%BB%8F%E7%82%B97%7C%E9%80%94%E7%BB%8F%E7%82%B98%7C%E9%80%94%E7%BB%8F%E7%82%B99%7C%E9%80%94%E7%BB%8F%E7%82%B910";
+        // 预设一期上班路线URL
+        const WORK_ONE_ROUTE_URL = "amapuri://route/plan/?sourceApplication=wuanrenwen&slat=40.088833&slon=116.316925&dlat=40.051186&dlon=116.28805&dev=0&t=0&vian=10&vialats=40.088553%7C40.089899%7C40.085291%7C40.088778%7C40.092807%7C40.088075%7C40.061248%7C40.059563%7C40.054456%7C40.051302&vialons=116.316402%7C116.315908%7C116.306354%7C116.303436%7C116.300395%7C116.274554%7C116.300303%7C116.294816%7C116.29252%7C116.292396&vianames=%E9%80%94%E7%BB%8F%E7%82%B91%7C%E9%80%94%E7%BB%8F%E7%82%B92%7C%E9%80%94%E7%BB%8F%E7%82%B93%7C%E9%80%94%E7%BB%8F%E7%82%B94%7C%E9%80%94%E7%BB%8F%E7%82%B95%7C%E9%80%94%E7%BB%8F%E7%82%B96%7C%E9%80%94%E7%BB%8F%E7%82%B97%7C%E9%80%94%E7%BB%8F%E7%82%B98%7C%E9%80%94%E7%BB%8F%E7%82%B99%7C%E9%80%94%E7%BB%8F%E7%82%B910";
 
-        // 预设回家路线URL
-        const HOME_ROUTE_URL = "amapuri://route/plan/?sourceApplication=wuanrenwen&slat=40.051186&slon=116.28805&dlat=40.0881&dlon=116.31728&dev=0&t=0&vian=11&vialats=40.050675%7C40.0523%7C40.053153%7C40.060953%7C40.065663%7C40.067025%7C40.063769%7C40.063619%7C40.066897%7C40.086026%7C40.088553&vialons=116.289805%7C116.293163%7C116.293265%7C116.316606%7C116.315812%7C116.319486%7C116.321541%7C116.3213%7C116.320575%7C116.308103%7C116.316402&vianames=%E9%80%94%E7%BB%8F%E7%82%B91%7C%E9%80%94%E7%BB%8F%E7%82%B92%7C%E9%80%94%E7%BB%8F%E7%82%B93%7C%E9%80%94%E7%BB%8F%E7%82%B94%7C%E9%80%94%E7%BB%8F%E7%82%B95%7C%E9%80%94%E7%BB%8F%E7%82%B96%7C%E9%80%94%E7%BB%8F%E7%82%B97%7C%E9%80%94%E7%BB%8F%E7%82%B98%7C%E9%80%94%E7%BB%8F%E7%82%B99%7C%E9%80%94%E7%BB%8F%E7%82%B910%7C%E9%80%94%E7%BB%8F%E7%82%B911";
+        // 预设从一期回家路线URL
+        const HOME_ONE_ROUTE_URL = "amapuri://route/plan/?sourceApplication=wuanrenwen&slat=40.051186&slon=116.28805&dlat=40.0881&dlon=116.31728&dev=0&t=0&vian=11&vialats=40.050675%7C40.0523%7C40.053153%7C40.060953%7C40.065663%7C40.067025%7C40.063769%7C40.063619%7C40.066897%7C40.086026%7C40.088553&vialons=116.289805%7C116.293163%7C116.293265%7C116.316606%7C116.315812%7C116.319486%7C116.321541%7C116.3213%7C116.320575%7C116.308103%7C116.316402&vianames=%E9%80%94%E7%BB%8F%E7%82%B91%7C%E9%80%94%E7%BB%8F%E7%82%B92%7C%E9%80%94%E7%BB%8F%E7%82%B93%7C%E9%80%94%E7%BB%8F%E7%82%B94%7C%E9%80%94%E7%BB%8F%E7%82%B95%7C%E9%80%94%E7%BB%8F%E7%82%B96%7C%E9%80%94%E7%BB%8F%E7%82%B97%7C%E9%80%94%E7%BB%8F%E7%82%B98%7C%E9%80%94%E7%BB%8F%E7%82%B99%7C%E9%80%94%E7%BB%8F%E7%82%B910%7C%E9%80%94%E7%BB%8F%E7%82%B911";
 
-        // 打开上班路线
-        function openWorkRoute() {
+        // 预设东大上班路线URL
+        const WORK_DONG_ROUTE_URL = "amapuri://route/plan/?sourceApplication=wuanrenwen&slat=40.089115&slon=116.31705&dlat=40.05249&dlon=116.28698&dev=0&t=0&vian=9&vialats=40.090758%7C40.086219%7C40.088778%7C40.092807%7C40.088075%7C40.061248%7C40.059563%7C40.054456%7C40.052912&vialons=116.317308%7C116.30842%7C116.303436%7C116.300395%7C116.274554%7C116.300303%7C116.294816%7C116.29252%7C116.291667&vianames=%E9%80%94%E7%BB%8F%E7%82%B91%7C%E9%80%94%E7%BB%8F%E7%82%B92%7C%E9%80%94%E7%BB%8F%E7%82%B93%7C%E9%80%94%E7%BB%8F%E7%82%B94%7C%E9%80%94%E7%BB%8F%E7%82%B95%7C%E9%80%94%E7%BB%8F%E7%82%B96%7C%E9%80%94%E7%BB%8F%E7%82%B97%7C%E9%80%94%E7%BB%8F%E7%82%B98%7C%E9%80%94%E7%BB%8F%E7%82%B99";
+
+        // 预设从东大回家路线URL
+        const HOME_DONG_ROUTE_URL = "amapuri://route/plan/?sourceApplication=wuanrenwen&slat=40.05249&slon=116.28698&dlat=40.089115&dlon=116.31705&dev=0&t=0&vian=13&vialats=40.051672%7C40.053019%7C40.056903%7C40.054456%7C40.053781%7C40.060953%7C40.065663%7C40.067025%7C40.063769%7C40.063619%7C40.066897%7C40.086026%7C40.088553&vialons=116.285176%7C116.284221%7C116.285471%7C116.29252%7C116.296146%7C116.316606%7C116.315812%7C116.319486%7C116.321541%7C116.3213%7C116.320575%7C116.308103%7C116.316402&vianames=%E9%80%94%E7%BB%8F%E7%82%B91%7C%E9%80%94%E7%BB%8F%E7%82%B92%7C%E9%80%94%E7%BB%8F%E7%82%B93%7C%E9%80%94%E7%BB%8F%E7%82%B94%7C%E9%80%94%E7%BB%8F%E7%82%B95%7C%E9%80%94%E7%BB%8F%E7%82%B96%7C%E9%80%94%E7%BB%8F%E7%82%B97%7C%E9%80%94%E7%BB%8F%E7%82%B98%7C%E9%80%94%E7%BB%8F%E7%82%B99%7C%E9%80%94%E7%BB%8F%E7%82%B910%7C%E9%80%94%E7%BB%8F%E7%82%B911%7C%E9%80%94%E7%BB%8F%E7%82%B912%7C%E9%80%94%E7%BB%8F%E7%82%B913";
+
+        // 打开去一期上班路线
+        function openOneWorkRoute() {
             // 在结果框显示上班路线URL
-            document.getElementById('amapUrl').value = WORK_ROUTE_URL;
+            document.getElementById('amapUrl').value = WORK_ONE_ROUTE_URL;
             // 更新导航链接并显示
             const mapLink = document.getElementById('mapLink');
-            mapLink.href = WORK_ROUTE_URL;
+            mapLink.href = WORK_ONE_ROUTE_URL;
             mapLink.style.display = 'block';
             // 跳转到高德地图
-            window.location.href = WORK_ROUTE_URL;
+            window.location.href = WORK_ONE_ROUTE_URL;
         }
 
-        // 打开回家路线
-        function openHomeRoute() {
+        // 打开从一期回家路线
+        function openOneHomeRoute() {
             // 在结果框显示回家路线URL
-            document.getElementById('amapUrl').value = HOME_ROUTE_URL;
+            document.getElementById('amapUrl').value = HOME_ONE_ROUTE_URL;
             // 更新导航链接并显示
             const mapLink = document.getElementById('mapLink');
-            mapLink.href = HOME_ROUTE_URL;
+            mapLink.href = HOME_ONE_ROUTE_URL;
             mapLink.style.display = 'block';
             // 跳转到高德地图
-            window.location.href = HOME_ROUTE_URL;
+            window.location.href = HOME_ONE_ROUTE_URL;
+        }
+
+        // 打开去东大停车场上班路线
+        function openDongWorkRoute() {
+            // 在结果框显示上班路线URL
+            document.getElementById('amapUrl').value = WORK_DONG_ROUTE_URL;
+            // 更新导航链接并显示
+            const mapLink = document.getElementById('mapLink');
+            mapLink.href = WORK_DONG_ROUTE_URL;
+            mapLink.style.display = 'block';
+            // 跳转到高德地图
+            window.location.href = WORK_DONG_ROUTE_URL;
+        }
+
+        // 打开从东大停车场回家路线
+        function openDongHomeRoute() {
+            // 在结果框显示回家路线URL
+            document.getElementById('amapUrl').value = HOME_DONG_ROUTE_URL;
+            // 更新导航链接并显示
+            const mapLink = document.getElementById('mapLink');
+            mapLink.href = HOME_DONG_ROUTE_URL;
+            mapLink.style.display = 'block';
+            // 跳转到高德地图
+            window.location.href = HOME_DONG_ROUTE_URL;
         }
 
         // 解析百度地图链接并转换为高德地图链接
