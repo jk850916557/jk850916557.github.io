@@ -324,6 +324,11 @@
                 <i class="fa fa-trash btn-icon" aria-hidden="true"></i>
                 清空内容
             </button>
+            <!-- 新增：手动更新导航链接按钮 -->
+            <button class="btn btn-secondary" onclick="updateMapLink()">
+                <i class="fa fa-refresh btn-icon" aria-hidden="true"></i>
+                更新导航链接
+            </button>
         </div>
 
         <div class="result-section">
@@ -332,7 +337,8 @@
                 <h2 class="section-title">转换结果（高德地图链接）</h2>
             </div>
             <div class="result-area">
-                <textarea id="amapUrl" readonly placeholder="转换后的高德地图链接将显示在这里"></textarea>
+                <!-- 移除 readonly 属性，保留 placeholder -->
+                <textarea id="amapUrl" placeholder="转换后的高德地图链接将显示在这里"></textarea>
             </div>
         </div>
 
@@ -345,7 +351,7 @@
             <strong>使用说明：</strong><br>
             1. 在上方输入框粘贴百度地图导航链接（baidumap:// 开头）<br>
             2. 点击"转换为高德地图链接"按钮进行转换<br>
-            3. 转换后的链接会显示在结果框中，点击"打开高德地图导航"即可使用<br>
+            3. 转换后的链接会显示在结果框中，可手动编辑后点击"更新导航链接"，再点击"打开高德地图导航"即可使用<br>
             4. 支持解析起点、终点和途经点信息并自动转换格式<br>
             5. 可直接点击"去上班"或"回家"按钮快速打开预设路线
         </div>
@@ -464,6 +470,31 @@
                 document.querySelector('.result-section').after(errorElement);
                 mapLink.style.display = 'none';
             }
+        }
+
+        // 新增：手动更新导航链接（适配编辑后的内容）
+        function updateMapLink() {
+            const amapUrlInput = document.getElementById('amapUrl');
+            const mapLink = document.getElementById('mapLink');
+            const errorDiv = document.querySelector('.error');
+
+            // 清除之前的错误信息
+            if (errorDiv) errorDiv.remove();
+
+            const customUrl = amapUrlInput.value.trim();
+            if (!customUrl) {
+                // 显示错误信息
+                const errorElement = document.createElement('div');
+                errorElement.className = 'error';
+                errorElement.innerHTML = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i>高德地图链接不能为空';
+                document.querySelector('.result-section').after(errorElement);
+                mapLink.style.display = 'none';
+                return;
+            }
+
+            // 更新导航链接并显示
+            mapLink.href = customUrl;
+            mapLink.style.display = 'block';
         }
 
         // 解析百度地图链接的坐标信息
